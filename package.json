@@ -1,0 +1,12 @@
+{
+  "name": "baseball-rankings",
+  "version": "1.0.0",
+  "description": "Points league draft board and roster tracker for fantasy baseball",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "tiers": "node scripts/rankings.js"
+  },
+  "keywords": ["fantasy", "baseball", "draft", "vorp", "rankings"],
+  "license": "MIT"
+}

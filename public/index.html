@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Points League Draft Board</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <h1>Points League Draft Board</h1>
+    <div class="header-right">
+      <button type="button" id="resetDraft">Reset Draft</button>
+      <button type="button" id="undoPick">Undo Last Pick</button>
+    </div>
+  </header>
+
+  <div class="two-panels">
+    <aside class="panel left">
+      <h2>Available Players</h2>
+      <div class="controls">
+        <input type="text" id="search" placeholder="Search..." />
+        <div class="sort-toggle">
+          <span class="sort-label">Sort:</span>
+          <button type="button" class="chip" id="sortVORP" data-sort="VORP">VORP</button>
+          <button type="button" class="chip" id="sortWeekly" data-sort="Weekly">Weekly</button>
+        </div>
+        <div class="filter-chips" id="filterChips">
+          <button type="button" class="chip active" data-filter="All">All</button>
+          <button type="button" class="chip" data-filter="SP">SP</button>
+          <button type="button" class="chip" data-filter="Hitter">Hitters</button>
+          <button type="button" class="chip" data-filter="Needed">Needed</button>
+          <button type="button" class="chip" data-filter="RP">RP</button>
+          <button type="button" class="chip" data-filter="C">C</button>
+          <button type="button" class="chip" data-filter="OF">OF</button>
+          <button type="button" class="chip" data-filter="1B">1B</button>
+          <button type="button" class="chip" data-filter="2B">2B</button>
+          <button type="button" class="chip" data-filter="3B">3B</button>
+          <button type="button" class="chip" data-filter="SS">SS</button>
+        </div>
+      </div>
+      <div class="stat-cards" id="statCards">
+        <div class="stat-card"><span class="stat-value" id="statBestVORP">—</span><span class="stat-label">Best VORP</span></div>
+        <div class="stat-card"><span class="stat-value" id="statBestSP">—</span><span class="stat-label">Best SP</span></div>
+        <div class="stat-card"><span class="stat-value" id="statBestHitter">—</span><span class="stat-label">Best Hitter</span></div>
+        <div class="stat-card"><span class="stat-value" id="statLargestDrop">—</span><span class="stat-label">Largest Drop</span></div>
+      </div>
+      <div class="table-wrap">
+        <table class="players-table" id="playersTable">
+          <thead>
+            <tr>
+              <th class="col-cliff"></th>
+              <th>Rank</th>
+              <th>Name</th>
+              <th>Position</th>
+              <th class="col-role">Role</th>
+              <th class="num col-vorp">VORP</th>
+              <th class="col-expanded num">Weekly</th>
+              <th class="col-expanded num">Pts/Event</th>
+              <th>Tier</th>
+              <th class="num col-tier-drop" title="Drop / local avg (cliff strength)">Tier Drop</th>
+              <th class="col-actions">Draft</th>
+            </tr>
+          </thead>
+          <tbody id="playersBody"></tbody>
+        </table>
+      </div>
+    </aside>
+
+    <aside class="panel sidebar">
+      <h2>My Draft</h2>
+      <div class="draft-roster-block">
+        <div class="draft-context" id="draftContext">
+          <div class="context-row"><span class="context-label">Picks</span><span id="ctxPicks">0 / 20</span></div>
+          <div class="context-row"><span class="context-label">Hitters</span><span id="ctxHitters">0 / 9</span></div>
+          <div class="context-row"><span class="context-label">SP</span><span id="ctxSP">0 / 4</span></div>
+          <div class="context-row"><span class="context-label">RP</span><span id="ctxRP">0 / 1</span></div>
+        </div>
+        <div class="slot-alerts" id="slotAlerts"></div>
+        <div class="slots" id="slots">
+          <div class="slot-row"><span class="slot-label">C</span><span class="slot-value"><span id="slotC" class="slot-count">0</span><span class="slot-max">/1</span></span></div>
+          <div class="slot-row"><span class="slot-label">1B</span><span class="slot-value"><span id="slot1B" class="slot-count">0</span><span class="slot-max">/1</span></span></div>
+          <div class="slot-row"><span class="slot-label">2B</span><span class="slot-value"><span id="slot2B" class="slot-count">0</span><span class="slot-max">/1</span></span></div>
+          <div class="slot-row"><span class="slot-label">3B</span><span class="slot-value"><span id="slot3B" class="slot-count">0</span><span class="slot-max">/1</span></span></div>
+          <div class="slot-row"><span class="slot-label">SS</span><span class="slot-value"><span id="slotSS" class="slot-count">0</span><span class="slot-max">/1</span></span></div>
+          <div class="slot-row"><span class="slot-label">OF</span><span class="slot-value"><span id="slotOF" class="slot-count">0</span><span class="slot-max">/3</span></span></div>
+          <div class="slot-row"><span class="slot-label">UTIL</span><span class="slot-value"><span id="slotUTIL" class="slot-count">0</span><span class="slot-max">/1</span></span></div>
+          <div class="slot-row"><span class="slot-label">SP</span><span class="slot-value"><span id="slotSP" class="slot-count">0</span><span class="slot-max">/4</span></span></div>
+          <div class="slot-row"><span class="slot-label">RP</span><span class="slot-value"><span id="slotRP" class="slot-count">0</span><span class="slot-max">/1</span></span></div>
+          <div class="slot-row"><span class="slot-label">Bench</span><span class="slot-value"><span id="slotBench" class="slot-count">0</span><span class="slot-max">/6</span></span></div>
+        </div>
+        <div class="team-list-wrap">
+          <h3 class="team-list-heading">Roster</h3>
+          <ul id="myTeamList" class="team-list"></ul>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="popup-overlay" id="popupOverlay">
+    <div class="popup" id="popup">
+      <h3 id="popupName"></h3>
+      <p id="popupInfo"></p>
+      <div class="popup-buttons">
+        <button type="button" id="btnOther">Remove</button>
+        <button type="button" id="btnMe">Draft</button>
+        <button type="button" id="btnCancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="popup-overlay" id="confirmResetOverlay">
+    <div class="popup" id="confirmResetPopup">
+      <h3>Reset draft?</h3>
+      <p>This will clear all picks and your roster. This cannot be undone.</p>
+      <div class="popup-buttons">
+        <button type="button" id="confirmResetBtn">Reset draft</button>
+        <button type="button" id="cancelResetBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
