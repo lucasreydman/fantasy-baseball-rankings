@@ -1,6 +1,6 @@
 (function () {
   const STORAGE_KEY = "draft_assistant";
-  const SLOT_MAX = { C: 1, "1B": 1, "2B": 1, "3B": 1, SS: 1, OF: 3, UTIL: 1, SP: 4, RP: 1, Bench: 6 };
+  const SLOT_MAX = { C: 1, "1B": 1, "2B": 1, "3B": 1, SS: 1, OF: 3, UTIL: 1, SP: 5, RP: 1, Bench: 5 };
 
   let allPlayers = [];
   let draftedByOther = new Set();
@@ -281,7 +281,7 @@
       if (n) n.textContent = text;
     };
     el("ctxPicks", picks + " / 20");
-    el("ctxSP", c.SP + " / 4");
+    el("ctxSP", c.SP + " / 5");
     el("ctxRP", c.RP + " / 1");
     el("ctxHitters", hitterStarters + " / 9");
   }
@@ -290,7 +290,7 @@
     var c = getSlotCounts();
     var picks = myTeam.length;
     var alerts = [];
-    if (picks >= 12 && c.SP < 4) alerts.push("Fewer than 4 SP by round 12 — consider drafting SP.");
+    if (picks >= 12 && c.SP < 5) alerts.push("Fewer than 5 SP by round 12 — consider drafting SP.");
     if (picks >= 14 && c.RP < 1) alerts.push("RP slot still empty after round 14 — consider drafting RP.");
     var container = document.getElementById("slotAlerts");
     if (!container) return;
@@ -403,10 +403,11 @@
   fetch("/data")
     .then(function (r) { return r.text(); })
     .then(function (text) {
-      allPlayers = csvToPlayers(parseCSV(text));
+      var full = csvToPlayers(parseCSV(text));
+      allPlayers = full.filter(function (p) { return (p.Rank | 0) <= 300; });
       refresh();
     })
     .catch(function () {
-      document.getElementById("playersBody").innerHTML = "<tr><td colspan=\"6\">Failed to load rankings.</td></tr>";
+      document.getElementById("playersBody").innerHTML = "<tr><td colspan=\"11\">Failed to load rankings.</td></tr>";
     });
 })();

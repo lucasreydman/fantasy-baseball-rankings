@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "tiers": "node scripts/rankings.js"
+    "tiers": "node scripts/rankings.js",
+    "generate": "node scripts/generate-rankings.js"
   },
   "keywords": ["fantasy", "baseball", "draft", "vorp", "rankings"],
   "license": "MIT"
