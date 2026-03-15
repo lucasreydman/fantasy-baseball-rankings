@@ -345,8 +345,8 @@ function assignTiers(players) {
 // --- Main ---
 function run() {
   const dataDir = path.join(__dirname, "..", "data");
-  const battersPath = path.join(dataDir, "batters.csv");
-  const pitchersPath = path.join(dataDir, "pitchers.csv");
+  const battersPath = path.join(dataDir, "FantasyPros_2026_Projections_H.csv");
+  const pitchersPath = path.join(dataDir, "FantasyPros_2026_Projections_P.csv");
   const outPath = path.join(dataDir, "rankings.csv");
 
   const batters = parseCSV(fs.readFileSync(battersPath, "utf8"));

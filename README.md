@@ -17,8 +17,8 @@ A fantasy baseball draft board and roster tracker for points leagues. Uses VORP-
 baseball-rankings/
 ├── data/                 # CSV data
 │   ├── rankings.csv      # Main board (VORP, tiers; served at /data)
-│   ├── batters.csv       # Source data (if you regenerate rankings)
-│   └── pitchers.csv
+│   ├── FantasyPros_2026_Projections_H.csv   # Hitter projections (source data)
+│   └── FantasyPros_2026_Projections_P.csv   # Pitcher projections (source data)
 ├── public/               # Static frontend
 │   ├── index.html
 │   ├── app.js            # Draft logic, UI, filters, persistence
@@ -41,7 +41,7 @@ Then open **http://localhost:3000**. The board loads rankings from `/data` (serv
 
 ## Generate rankings (custom scoring)
 
-Build `rankings.csv` from `batters.csv` and `pitchers.csv` using your league scoring rules:
+Build `rankings.csv` from `FantasyPros_2026_Projections_H.csv` and `FantasyPros_2026_Projections_P.csv` using your league scoring rules:
 
 ```bash
 npm run generate
@@ -61,7 +61,7 @@ If you edit `data/rankings.csv` by hand and only want to recompute Tier and Tier
 npm run tiers
 ```
 
-This rewrites `data/rankings.csv` in place with updated tier columns. For a full rebuild from `batters.csv` and `pitchers.csv`, use `npm run generate` instead.
+This rewrites `data/rankings.csv` in place with updated tier columns. For a full rebuild from the FantasyPros projection files, use `npm run generate` instead.
 
 ## Tech
 
