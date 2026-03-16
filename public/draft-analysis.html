@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lu's Lazers — Draft Analysis 2026</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ── Page layout ── */
+    .analysis-wrap { max-width: 1100px; margin: 0 auto; padding: 24px 16px 60px; }
+    h2.section-title {
+      font-size: 1rem; text-transform: uppercase; letter-spacing: .08em;
+      color: var(--accent); border-bottom: 1px solid var(--border);
+      padding-bottom: 8px; margin: 36px 0 16px;
+    }
+
+    /* ── Grade chip ── */
+    .grade {
+      display: inline-block; width: 32px; height: 32px; line-height: 32px;
+      text-align: center; border-radius: 6px; font-weight: 700; font-size: 13px;
+    }
+    .grade-Aplus { background: #16a34a; color: #fff; }
+    .grade-A     { background: #22c55e; color: #0f172a; }
+    .grade-Aminus{ background: #4ade80; color: #0f172a; }
+    .grade-Bplus { background: #0ea5e9; color: #fff; }
+    .grade-B     { background: #38bdf8; color: #0f172a; }
+    .grade-Bminus{ background: #7dd3fc; color: #0f172a; }
+    .grade-Cplus { background: #f59e0b; color: #0f172a; }
+    .grade-C     { background: #fbbf24; color: #0f172a; }
+    .grade-Cminus{ background: #fcd34d; color: #0f172a; }
+    .grade-D     { background: #ef4444; color: #fff; }
+    .grade-F     { background: #7f1d1d; color: #fff; }
+
+    /* ── Summary cards ── */
+    .summary-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;
+      margin-bottom: 8px;
+    }
+    .summary-card {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px;
+    }
+    .summary-card .card-label { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--text-secondary); margin-bottom: 6px; }
+    .summary-card .card-value { font-size: 1.6rem; font-weight: 700; color: var(--accent); }
+    .summary-card .card-sub   { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+    .overall-grade-card .card-value { font-size: 2.2rem; color: #22c55e; }
+
+    /* ── Roster table ── */
+    .roster-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .roster-table th {
+      text-align: left; padding: 8px 10px;
+      background: #1e293b; color: var(--text-secondary);
+      font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: .05em;
+      border-bottom: 1px solid var(--border);
+    }
+    .roster-table td {
+      padding: 9px 10px; border-bottom: 1px solid #1e293b; vertical-align: middle;
+    }
+    .roster-table tr:hover td { background: rgba(255,255,255,.03); }
+    .roster-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+    .pick-num   { font-size: 11px; color: var(--text-secondary); }
+    .player-name { font-weight: 600; }
+    .pos-chip {
+      display: inline-block; padding: 2px 7px; border-radius: 4px;
+      font-size: 11px; font-weight: 600; background: #1e293b; color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+    .pos-SP { background: rgba(14,165,233,.15); color: #38bdf8; border-color: #0ea5e9; }
+    .pos-RP { background: rgba(236,72,153,.15); color: #f472b6; border-color: #ec4899; }
+    .pos-C  { background: rgba(245,158,11,.15); color: #fbbf24; border-color: #f59e0b; }
+    .pos-1B { background: rgba(34,197,94,.15);  color: #4ade80; border-color: #22c55e; }
+    .pos-2B { background: rgba(34,197,94,.12);  color: #86efac; border-color: #4ade80; }
+    .pos-3B { background: rgba(99,102,241,.15); color: #a5b4fc; border-color: #6366f1; }
+    .pos-SS { background: rgba(168,85,247,.15); color: #d8b4fe; border-color: #a855f7; }
+    .pos-OF { background: rgba(20,184,166,.15); color: #5eead4; border-color: #14b8a6; }
+    .pos-UTIL { background: rgba(113,113,122,.15); color: #a1a1aa; border-color: #71717a; }
+    .vorp-val { font-weight: 600; }
+    .vorp-pos { color: #4ade80; }
+    .vorp-neg { color: #f87171; }
+    .note-cell { font-size: 12px; color: var(--text-secondary); max-width: 280px; }
+    .note-good { color: #86efac; }
+    .note-bad  { color: #fca5a5; }
+    .note-warn { color: #fcd34d; }
+
+    /* ── Strength / weakness lists ── */
+    .sw-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .sw-card  {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px;
+    }
+    .sw-card h3 { font-size: .8rem; text-transform: uppercase; letter-spacing:.07em; margin-bottom: 12px; }
+    .sw-card.strengths h3 { color: #4ade80; }
+    .sw-card.weaknesses h3 { color: #f87171; }
+    .sw-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .sw-list li { font-size: 13px; padding-left: 18px; position: relative; line-height: 1.4; }
+    .sw-list li::before { position: absolute; left: 0; font-size: 14px; }
+    .strengths .sw-list li::before  { content: "✓"; color: #4ade80; }
+    .weaknesses .sw-list li::before { content: "✗"; color: #f87171; }
+
+    /* ── Trade recommendation cards ── */
+    .trade-card {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 18px; margin-bottom: 12px;
+    }
+    .trade-card .trade-header {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+    }
+    .trade-priority {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; border-radius: 50%;
+      font-weight: 700; font-size: 13px; flex-shrink: 0;
+    }
+    .prio-1 { background: #ef4444; color: #fff; }
+    .prio-2 { background: #f59e0b; color: #0f172a; }
+    .prio-3 { background: #22c55e; color: #0f172a; }
+    .trade-title { font-weight: 700; font-size: .95rem; }
+    .trade-parties {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      background: #0f172a; border-radius: 6px; padding: 12px; margin: 10px 0;
+    }
+    .trade-side { flex: 1; min-width: 160px; }
+    .trade-side-label { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-secondary); margin-bottom: 6px; }
+    .trade-arrow { font-size: 20px; color: var(--accent); }
+    .trade-players { display: flex; flex-direction: column; gap: 5px; }
+    .trade-player-row { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+    .send-tag { color: #fca5a5; font-weight: 600; }
+    .recv-tag { color: #86efac; font-weight: 600; }
+    .trade-rationale { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+    .trade-rationale strong { color: var(--text); }
+
+    /* ── Wire pickups ── */
+    .wire-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+    .wire-card {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 14px;
+    }
+    .wire-card .wire-player { font-weight: 700; font-size: .9rem; margin-bottom: 4px; }
+    .wire-card .wire-meta   { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; }
+    .wire-card .wire-action { font-size: 12px; color: #fcd34d; font-weight: 600; }
+    .wire-card .wire-why    { font-size: 12px; color: var(--text-secondary); margin-top: 4px; line-height: 1.4; }
+    .drop-tag { color: #f87171; font-weight: 600; }
+
+    /* ── League overview table ── */
+    .league-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .league-table th {
+      padding: 8px 10px; background: #1e293b; color: var(--text-secondary);
+      font-size: 10px; text-transform: uppercase; letter-spacing: .05em;
+      border-bottom: 1px solid var(--border); text-align: left;
+    }
+    .league-table td { padding: 8px 10px; border-bottom: 1px solid #1e293b; }
+    .league-table tr.my-row td { background: rgba(34,211,238,.06); }
+    .league-table .need-chip {
+      display: inline-block; padding: 2px 7px; border-radius: 12px;
+      background: rgba(239,68,68,.15); color: #fca5a5; font-size: 11px;
+      margin: 1px 2px; border: 1px solid rgba(239,68,68,.3);
+    }
+    .league-table .have-chip {
+      display: inline-block; padding: 2px 7px; border-radius: 12px;
+      background: rgba(34,197,94,.12); color: #86efac; font-size: 11px;
+      margin: 1px 2px; border: 1px solid rgba(34,197,94,.3);
+    }
+    .team-name-cell { font-weight: 600; }
+    .my-row .team-name-cell { color: var(--accent); }
+
+    /* ── Callout boxes ── */
+    .callout {
+      border-radius: var(--radius); padding: 14px 16px; margin: 12px 0;
+      font-size: 13px; line-height: 1.5; border-left: 3px solid;
+    }
+    .callout-bad  { background: rgba(239,68,68,.1);  border-color: #ef4444; color: #fca5a5; }
+    .callout-good { background: rgba(34,197,94,.1);  border-color: #22c55e; color: #86efac; }
+    .callout-info { background: rgba(34,211,238,.1); border-color: #22d3ee; color: #67e8f9; }
+    .callout strong { font-weight: 700; }
+
+    /* ── Overall grade banner ── */
+    .grade-banner {
+      display: flex; align-items: center; gap: 24px;
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px; margin-bottom: 24px;
+    }
+    .grade-big {
+      font-size: 4rem; font-weight: 900; color: #38bdf8;
+      line-height: 1; text-shadow: 0 0 40px rgba(56,189,248,.4);
+    }
+    .grade-banner-text h2 { font-size: 1.2rem; margin-bottom: 6px; }
+    .grade-banner-text p  { font-size: 13px; color: var(--text-secondary); line-height: 1.5; max-width: 600px; }
+
+    @media (max-width: 700px) {
+      .sw-grid { grid-template-columns: 1fr; }
+      .trade-parties { flex-direction: column; }
+    }
+
+    /* ── Slot labels ── */
+    .sl           { font-weight: 700; }
+    .sl-C         { color: #fbbf24; }
+    .sl-1B        { color: #4ade80; }
+    .sl-2B        { color: #86efac; }
+    .sl-3B        { color: #a5b4fc; }
+    .sl-SS        { color: #d8b4fe; }
+    .sl-OF        { color: #5eead4; }
+    .sl-UTIL      { color: #67e8f9; }
+    .sl-SP        { color: #38bdf8; }
+    .sl-RP        { color: #f472b6; }
+    .sl-bench     { color: var(--text-secondary); }
+
+    /* ── Row variants ── */
+    .row-util       { background: rgba(34,211,238,.05); }
+    .row-section    { border-top: 2px solid var(--border); }
+    .row-bench-hdr  { border-top: 2px solid var(--border); background: rgba(0,0,0,.2); }
+    .row-warn       { background: rgba(239,68,68,.05); }
+    .bench-lbl      { color: var(--text-secondary); font-size: 12px; }
+
+    /* ── Layout helpers ── */
+    .panel-wrap    { overflow-x: auto; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); }
+    .panel-wrap-mb { overflow-x: auto; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 28px; }
+    .panel-pad     { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+    .link-plain    { text-decoration: none; }
+    .mt-0          { margin-top: 0; }
+    .mt-16         { margin-top: 16px; }
+
+    /* ── Card value colours ── */
+    .cv-green  { color: #22c55e; }
+    .cv-blue   { color: #38bdf8; }
+    .cv-orange { color: #f59e0b; }
+    .cv-red    { color: #ef4444; }
+
+    /* ── Misc ── */
+    .trade-meta        { color: var(--text-secondary); font-size: 12px; }
+    .pos-chip + .pos-chip { margin-left: 3px; }
+    .fw-bold           { font-weight: 700; }
+  </style>
+</head>
+<body>
+<header class="header">
+  <h1>Lu's Lazers — 2026 Draft Analysis</h1>
+  <div class="header-right">
+    <a href="/" class="link-plain">
+      <button type="button">← Draft Board</button>
+    </a>
+  </div>
+</header>
+
+<div class="analysis-wrap">
+
+  <!-- ═══════════════════════════════════════════
+       OPTIMAL STARTING LINEUP
+  ════════════════════════════════════════════ -->
+  <h2 class="section-title mt-0">Optimal Starting Lineup — As Constructed</h2>
+  <div class="panel-wrap-mb">
+    <table class="roster-table">
+      <thead>
+        <tr>
+          <th>Slot</th>
+          <th>Player</th>
+          <th>Eligibility</th>
+          <th class="num">Rank</th>
+          <th class="num">Weekly Pts</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="sl sl-C">C</td><td class="player-name">Cal Raleigh</td><td><span class="pos-chip pos-C">C</span></td><td class="num vorp-pos">#9</td><td class="num vorp-pos">22.31</td><td class="note-cell note-good">Elite — best C in the league</td></tr>
+        <tr><td class="sl sl-1B">1B</td><td class="player-name">Salvador Perez</td><td><span class="pos-chip pos-C">C</span><span class="pos-chip pos-1B">1B</span></td><td class="num">#96</td><td class="num">16.26</td><td class="note-cell note-warn">Below-average 1B, but fills the slot. Upgradeable.</td></tr>
+        <tr><td class="sl sl-2B">2B</td><td class="player-name">Maikel Garcia</td><td><span class="pos-chip pos-2B">2B</span><span class="pos-chip pos-3B">3B</span><span class="pos-chip pos-SS">SS</span><span class="pos-chip pos-OF">OF</span></td><td class="num vorp-pos">#45</td><td class="num vorp-pos">19.48</td><td class="note-cell note-good">Only 2B-eligible player — must start here</td></tr>
+        <tr><td class="sl sl-3B">3B</td><td class="player-name">Alex Bregman</td><td><span class="pos-chip pos-3B">3B</span></td><td class="num vorp-pos">#58</td><td class="num vorp-pos">18.99</td><td class="note-cell note-good">Reliable floor, low injury risk</td></tr>
+        <tr><td class="sl sl-SS">SS</td><td class="player-name">Dansby Swanson</td><td><span class="pos-chip pos-SS">SS</span></td><td class="num">#126</td><td class="num">17.78</td><td class="note-cell note-warn">Below-average, but best SS on roster</td></tr>
+        <tr><td class="sl sl-OF">OF</td><td class="player-name">Brent Rooker</td><td><span class="pos-chip pos-OF">OF</span></td><td class="num vorp-pos">#26</td><td class="num vorp-pos">21.54</td><td class="note-cell note-good">Anchor — power bat, elite weekly</td></tr>
+        <tr><td class="sl sl-OF">OF</td><td class="player-name">Taylor Ward</td><td><span class="pos-chip pos-OF">OF</span></td><td class="num vorp-pos">#77</td><td class="num vorp-pos">19.23</td><td class="note-cell note-good">Solid producer in Baltimore</td></tr>
+        <tr><td class="sl sl-OF">OF</td><td class="player-name">Jakob Marsee</td><td><span class="pos-chip pos-OF">OF</span></td><td class="num">#134</td><td class="num">17.60</td><td class="note-cell">Fringe starter, upside pick</td></tr>
+        <tr class="row-util"><td class="sl sl-UTIL">UTIL</td><td class="player-name">Lawrence Butler</td><td><span class="pos-chip pos-OF">OF</span></td><td class="num">#149</td><td class="num">17.32</td><td class="note-cell note-good">Highest-weekly hitter not in a positional slot — starts here, not Vargas</td></tr>
+        <tr class="row-section"><td class="sl sl-SP">SP</td><td class="player-name">Garrett Crochet</td><td><span class="pos-chip pos-SP">SP</span></td><td class="num vorp-pos">#6</td><td class="num vorp-pos">15.87</td><td class="note-cell note-good">Ace</td></tr>
+        <tr><td class="sl sl-SP">SP</td><td class="player-name">Chris Sale</td><td><span class="pos-chip pos-SP">SP</span></td><td class="num vorp-pos">#22</td><td class="num vorp-pos">12.87</td><td class="note-cell note-good">#2 starter</td></tr>
+        <tr><td class="sl sl-SP">SP</td><td class="player-name">Jesús Luzardo</td><td><span class="pos-chip pos-SP">SP</span></td><td class="num vorp-pos">#40</td><td class="num vorp-pos">11.79</td><td class="note-cell note-good">#3 starter</td></tr>
+        <tr><td class="sl sl-SP">SP</td><td class="player-name">Blake Snell</td><td><span class="pos-chip pos-SP">SP</span></td><td class="num vorp-pos">#80</td><td class="num vorp-pos">10.16</td><td class="note-cell note-good">High-upside #4</td></tr>
+        <tr><td class="sl sl-SP">SP</td><td class="player-name">Drew Rasmussen</td><td><span class="pos-chip pos-SP">SP</span></td><td class="num">#103</td><td class="num">9.50</td><td class="note-cell">Reliable depth #5</td></tr>
+        <tr><td class="sl sl-RP">RP</td><td class="player-name">David Bednar</td><td><span class="pos-chip pos-RP">RP</span></td><td class="num">#102</td><td class="num">12.21</td><td class="note-cell note-warn">Only reliever — thin</td></tr>
+        <tr class="row-bench-hdr"><td colspan="4" class="bench-lbl">BENCH</td><td></td><td></td></tr>
+        <tr><td class="sl sl-bench">Bench</td><td class="player-name">Miguel Vargas</td><td><span class="pos-chip pos-1B">1B</span><span class="pos-chip pos-3B">3B</span></td><td class="num">#135</td><td class="num">16.39</td><td class="note-cell">1B/3B depth — backup if Perez trades</td></tr>
+        <tr><td class="sl sl-bench">Bench</td><td class="player-name">Masyn Winn</td><td><span class="pos-chip pos-SS">SS</span></td><td class="num">#171</td><td class="num">16.66</td><td class="note-cell note-bad">Redundant SS — drop candidate #2</td></tr>
+        <tr><td class="sl sl-bench">Bench</td><td class="player-name">Adolis García</td><td><span class="pos-chip pos-OF">OF</span></td><td class="num">#172</td><td class="num">16.58</td><td class="note-cell note-bad">Low VORP bench filler — drop candidate</td></tr>
+        <tr><td class="sl sl-bench">Bench</td><td class="player-name">Alec Bohm</td><td><span class="pos-chip pos-1B">1B</span><span class="pos-chip pos-3B">3B</span></td><td class="num">#176</td><td class="num">15.29</td><td class="note-cell note-bad">VORP 0.00 — drop candidate #1, first to go</td></tr>
+        <tr><td class="sl sl-bench">Bench</td><td class="player-name">José Soriano</td><td><span class="pos-chip pos-SP">SP</span></td><td class="num">#144</td><td class="num">8.41</td><td class="note-cell">6th SP — injury insurance</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       OVERALL GRADE BANNER
+  ════════════════════════════════════════════ -->
+  <div class="grade-banner">
+    <div class="grade-big">B+</div>
+    <div class="grade-banner-text">
+      <h2>Solid Draft — Loaded Pitching, Thin in Spots</h2>
+      <p>Lu's Lazers built an elite starting rotation anchored by Crochet + Sale + Luzardo + Snell and snagged Cal Raleigh for a massive catcher advantage. Salvador Perez (C/1B) slots to 1B with Raleigh at C — not ideal since he's Rank 96 at the position, but functional. The real weaknesses are thin RP coverage and a below-average SS. The bones here are excellent and this is a playoff contender as constructed.</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       SUMMARY CARDS
+  ════════════════════════════════════════════ -->
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="card-label">Starting Pitching</div>
+      <div class="card-value cv-blue">Elite</div>
+      <div class="card-sub">5 quality SPs — top rotation in league</div>
+    </div>
+    <div class="summary-card">
+      <div class="card-label">Catcher</div>
+      <div class="card-value cv-green">Elite</div>
+      <div class="card-sub">Cal Raleigh — #2 overall catcher scarcity win</div>
+    </div>
+    <div class="summary-card">
+      <div class="card-label">First Base</div>
+      <div class="card-value cv-orange">Below Avg</div>
+      <div class="card-sub">Perez (C/1B eligible) slots here — Rank 96, functional but upgradeable</div>
+    </div>
+    <div class="summary-card">
+      <div class="card-label">Relief Pitching</div>
+      <div class="card-value cv-orange">Thin</div>
+      <div class="card-sub">Bednar only — needs a second arm</div>
+    </div>
+    <div class="summary-card">
+      <div class="card-label">Shortstop</div>
+      <div class="card-value cv-orange">Weak</div>
+      <div class="card-sub">Swanson is below-average, Winn is bench-only</div>
+    </div>
+    <div class="summary-card">
+      <div class="card-label">Outfield</div>
+      <div class="card-value cv-blue">Solid</div>
+      <div class="card-sub">Rooker anchors + Butler in UTIL — depth is fine</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       STRENGTHS / WEAKNESSES
+  ════════════════════════════════════════════ -->
+  <h2 class="section-title">Strengths &amp; Weaknesses</h2>
+  <div class="sw-grid">
+    <div class="sw-card strengths">
+      <h3>Strengths</h3>
+      <ul class="sw-list">
+        <li><strong>Rotation depth is unmatched</strong> — Crochet (Rank 6), Sale (22), Luzardo (40), Snell (80), Rasmussen (103). Five legitimate starters with real upside. Nobody in this league can match this staff top-to-bottom.</li>
+        <li><strong>Cal Raleigh is a league-winner</strong> — At Rank 9 overall (VORP 8.26), Raleigh is the best catcher available and provides a massive edge over every team using a C ranked 95+.</li>
+        <li><strong>Maikel Garcia is a secret weapon</strong> — 2B/3B/SS/OF eligibility means he slots anywhere. Multi-pos flexibility in a competitive league is priceless.</li>
+        <li><strong>Brent Rooker in Round 4</strong> — Rank 26 value in Round 4 is a strong pick. Power bat, proven producer.</li>
+        <li><strong>Alex Bregman fills 3B quietly</strong> — Rank 58, taken at pick 83. Solid production with minimal injury risk at his age.</li>
+        <li><strong>Blake Snell in Round 11</strong> — Rank 80 value in R11 is excellent. Huge upside if he recaptures his Cy Young form.</li>
+      </ul>
+    </div>
+    <div class="sw-card weaknesses">
+      <h3>Weaknesses</h3>
+      <ul class="sw-list">
+        <li><strong>1B is below-average</strong> — Perez has C/1B eligibility so he slides to 1B with Raleigh at C. Functional, but Perez (Rank 96) is one of the weaker 1B starters in the league. Most contenders have a Rank 25–75 1B. Upgradeable via trade, not a crisis.</li>
+        <li><strong>Perez pick was still sub-optimal</strong> — Even with C/1B eligibility factored in, Seiya Suzuki (Rank 85, straight-up better player) was available at pick 110. You filled a need but at below-market value for a 10th-round pick. The pick wasn't wasted — it was just inefficient.</li>
+        <li><strong>RP is dangerously thin</strong> — Only David Bednar. One injury and this category is toast. Most contenders carry 2–3 relievers.</li>
+        <li><strong>SS is below-average</strong> — Dansby Swanson (Rank 126) is a starter-quality floor but not a ceiling play. Masyn Winn (Rank 171) as backup SS was a wasted 17th round pick.</li>
+        <li><strong>Outfield depth is shallow</strong> — Marsee, Butler, and García are all fringe starters. A Taylor Ward slump creates real problems.</li>
+        <li><strong>Over-indexed on pitching</strong> — 7 of 20 picks were pitchers. Elite, but leaves the hitting side thin in spots (1B, SS, OF depth).</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       PICK-BY-PICK ROSTER TABLE
+  ════════════════════════════════════════════ -->
+  <h2 class="section-title">Pick-by-Pick Breakdown</h2>
+  <div class="panel-wrap">
+    <table class="roster-table">
+      <thead>
+        <tr>
+          <th>Grade</th>
+          <th>Rnd/Pick</th>
+          <th>Player</th>
+          <th>Team/Pos</th>
+          <th class="num">Rank</th>
+          <th class="num">VORP</th>
+          <th>Verdict</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!-- R1 Crochet -->
+        <tr>
+          <td><span class="grade grade-Aplus">A+</span></td>
+          <td class="pick-num">R1 · #11</td>
+          <td class="player-name">Garrett Crochet</td>
+          <td><span class="pos-chip pos-SP">SP</span> BOS</td>
+          <td class="num vorp-val vorp-pos">#6</td>
+          <td class="num vorp-val vorp-pos">8.41</td>
+          <td class="note-cell note-good">Top-6 value in round 1. The best SP available after Skubal. Anchors what will be the league's best rotation.</td>
+        </tr>
+
+        <!-- R2 Cal Raleigh -->
+        <tr>
+          <td><span class="grade grade-Aplus">A+</span></td>
+          <td class="pick-num">R2 · #14</td>
+          <td class="player-name">Cal Raleigh</td>
+          <td><span class="pos-chip pos-C">C</span> SEA</td>
+          <td class="num vorp-val vorp-pos">#9</td>
+          <td class="num vorp-val vorp-pos">8.26</td>
+          <td class="note-cell note-good">Best catcher in baseball with massive positional scarcity value. Winning the C slot by 5+ VORP over most competitors is a weekly edge all season.</td>
+        </tr>
+
+        <!-- R3 Chris Sale -->
+        <tr>
+          <td><span class="grade grade-Bplus">B+</span></td>
+          <td class="pick-num">R3 · #35</td>
+          <td class="player-name">Chris Sale</td>
+          <td><span class="pos-chip pos-SP">SP</span> ATL</td>
+          <td class="num vorp-val vorp-pos">#22</td>
+          <td class="num vorp-val vorp-pos">5.42</td>
+          <td class="note-cell note-good">Good value, Rank 22 in round 3 works. That said, deGrom (Rank 36) also available — either was fine. Sale's injury history is the only real risk.</td>
+        </tr>
+
+        <!-- R4 Rooker -->
+        <tr>
+          <td><span class="grade grade-Aminus">A-</span></td>
+          <td class="pick-num">R4 · #38</td>
+          <td class="player-name">Brent Rooker</td>
+          <td><span class="pos-chip pos-OF">OF</span> ATH</td>
+          <td class="num vorp-val vorp-pos">#26</td>
+          <td class="num vorp-val vorp-pos">5.08</td>
+          <td class="note-cell note-good">Rank 26 in Round 4 is excellent value. Power/SLG profile is perfect for a UTIL/OF anchor. Only ding is the Athletics' questionable lineup around him.</td>
+        </tr>
+
+        <!-- R5 Maikel Garcia -->
+        <tr>
+          <td><span class="grade grade-A">A</span></td>
+          <td class="pick-num">R5 · #59</td>
+          <td class="player-name">Maikel Garcia</td>
+          <td><span class="pos-chip pos-2B">2B</span><span class="pos-chip pos-3B">3B</span><span class="pos-chip pos-SS">SS</span> KC</td>
+          <td class="num vorp-val vorp-pos">#45</td>
+          <td class="num vorp-val vorp-pos">4.19</td>
+          <td class="note-cell note-good">Quadruple-position eligibility (2B/3B/SS/OF) is priceless roster flexibility. Solid production baked in, upside in a lineup with Witt Jr. Available at Rank 45 in R5 is a steal.</td>
+        </tr>
+
+        <!-- R6 Luzardo -->
+        <tr>
+          <td><span class="grade grade-Bplus">B+</span></td>
+          <td class="pick-num">R6 · #62</td>
+          <td class="player-name">Jesús Luzardo</td>
+          <td><span class="pos-chip pos-SP">SP</span> PHI</td>
+          <td class="num vorp-val vorp-pos">#40</td>
+          <td class="num vorp-val vorp-pos">4.34</td>
+          <td class="note-cell note-good">Rank 40 in Round 6 is solid, especially for a 25-year-old with a full year in Philly's strong rotation. Solidifies the SP depth nicely.</td>
+        </tr>
+
+        <!-- R7 Bregman -->
+        <tr>
+          <td><span class="grade grade-Bplus">B+</span></td>
+          <td class="pick-num">R7 · #83</td>
+          <td class="player-name">Alex Bregman</td>
+          <td><span class="pos-chip pos-3B">3B</span> CHC</td>
+          <td class="num vorp-val vorp-pos">#58</td>
+          <td class="num vorp-val vorp-pos">3.70</td>
+          <td class="note-cell note-good">Rank 58 at pick 83 is good value. Fills 3B with reliability. Willy Adames (Rank 64) was also available and could have addressed SS — a small decision regret but not a mistake.</td>
+        </tr>
+
+        <!-- R8 Bednar -->
+        <tr>
+          <td><span class="grade grade-Cplus">C+</span></td>
+          <td class="pick-num">R8 · #86</td>
+          <td class="player-name">David Bednar</td>
+          <td><span class="pos-chip pos-RP">RP</span> NYY</td>
+          <td class="num vorp-val">#102</td>
+          <td class="num vorp-val">2.06</td>
+          <td class="note-cell note-warn">Slight reach — Rank 102 at pick 86. Bednar is fine, but taking the only RP this early and then not adding a second one all draft hurt. Sonny Gray (Rank 67) was still available here and would have added pitching upside instead.</td>
+        </tr>
+
+        <!-- R9 Taylor Ward -->
+        <tr>
+          <td><span class="grade grade-B">B</span></td>
+          <td class="pick-num">R9 · #107</td>
+          <td class="player-name">Taylor Ward</td>
+          <td><span class="pos-chip pos-OF">OF</span> BAL</td>
+          <td class="num vorp-val vorp-pos">#77</td>
+          <td class="num vorp-val vorp-pos">2.76</td>
+          <td class="note-cell note-good">Rank 77 at pick 107 is good value. Hits in a strong Baltimore lineup. Solid floor pick for OF depth.</td>
+        </tr>
+
+        <!-- R10 Sal Perez -->
+        <tr class="row-warn">
+          <td><span class="grade grade-C">C</span></td>
+          <td class="pick-num">R10 · #110</td>
+          <td class="player-name">Salvador Perez</td>
+          <td><span class="pos-chip pos-C">C</span><span class="pos-chip pos-1B">1B</span> KC</td>
+          <td class="num vorp-val">#96</td>
+          <td class="num vorp-val">2.21</td>
+          <td class="note-cell note-warn"><strong>Corrected assessment:</strong> Perez has C/1B eligibility — Raleigh plays C, Perez slides to 1B. This is a functional lineup. However it's still sub-optimal: Seiya Suzuki (Rank 85, VORP 2.56) was available here and is a flat-out better player. Perez at 1B (Rank 96) is below-average for the position but playable. Not a wasted pick — just inefficient.</td>
+        </tr>
+
+        <!-- R11 Snell -->
+        <tr>
+          <td><span class="grade grade-Aminus">A-</span></td>
+          <td class="pick-num">R11 · #131</td>
+          <td class="player-name">Blake Snell</td>
+          <td><span class="pos-chip pos-SP">SP</span> LAD</td>
+          <td class="num vorp-val vorp-pos">#80</td>
+          <td class="num vorp-val vorp-pos">2.71</td>
+          <td class="note-cell note-good">Rank 80 in Round 11 is outstanding value. Back in LA with a full season and revenge motivation. Massive upside as a late-round lottery ticket that could crack the top 40.</td>
+        </tr>
+
+        <!-- R12 Swanson -->
+        <tr>
+          <td><span class="grade grade-Cminus">C-</span></td>
+          <td class="pick-num">R12 · #134</td>
+          <td class="player-name">Dansby Swanson</td>
+          <td><span class="pos-chip pos-SS">SS</span> CHC</td>
+          <td class="num vorp-val">#126</td>
+          <td class="num vorp-val">1.32</td>
+          <td class="note-cell note-warn">Needed to fill SS eventually, but Swanson at Rank 126 is a significant reach relative to what this pick could have been. Bo Bichette (Rank 123) went to bobby's at #72 in Round 6 — if SS was going to be targeted late, Masyn Winn added nothing later.</td>
+        </tr>
+
+        <!-- R13 Rasmussen -->
+        <tr>
+          <td><span class="grade grade-B">B</span></td>
+          <td class="pick-num">R13 · #155</td>
+          <td class="player-name">Drew Rasmussen</td>
+          <td><span class="pos-chip pos-SP">SP</span> TB</td>
+          <td class="num vorp-val vorp-pos">#103</td>
+          <td class="num vorp-val vorp-pos">2.05</td>
+          <td class="note-cell note-good">Good value at Rank 103 in R13. Adds reliable depth behind the starters. If one of the top SPs gets hurt, Rasmussen is a competent fill-in.</td>
+        </tr>
+
+        <!-- R14 Marsee -->
+        <tr>
+          <td><span class="grade grade-Bminus">B-</span></td>
+          <td class="pick-num">R14 · #158</td>
+          <td class="player-name">Jakob Marsee</td>
+          <td><span class="pos-chip pos-OF">OF</span> MIA</td>
+          <td class="num vorp-val">#134</td>
+          <td class="num vorp-val">1.14</td>
+          <td class="note-cell note-good">Rank 134 at pick 158 — slight upside pick in a reasonable range. Marsee has contact/speed skills that project well. Fine flier pick for the round.</td>
+        </tr>
+
+        <!-- R15 Vargas -->
+        <tr>
+          <td><span class="grade grade-C">C</span></td>
+          <td class="pick-num">R15 · #179</td>
+          <td class="player-name">Miguel Vargas</td>
+          <td><span class="pos-chip pos-1B">1B</span><span class="pos-chip pos-3B">3B</span> CWS</td>
+          <td class="num vorp-val">#135</td>
+          <td class="num vorp-val">1.11</td>
+          <td class="note-cell note-warn">1B/3B utility on a bad team. Too late to meaningfully fix the 1B situation. Value is there for the round but he's likely a bench bat or trade chip. This should have been addressed 5 rounds earlier.</td>
+        </tr>
+
+        <!-- R16 Soriano -->
+        <tr>
+          <td><span class="grade grade-Cplus">C+</span></td>
+          <td class="pick-num">R16 · #182</td>
+          <td class="player-name">José Soriano</td>
+          <td><span class="pos-chip pos-SP">SP</span> LAA</td>
+          <td class="num vorp-val">#144</td>
+          <td class="num vorp-val">0.95</td>
+          <td class="note-cell note-warn">7th pitcher drafted. Rotation is deep enough — this slot could have been a hitter or RP instead. Soriano has upside but the Angels are not a great environment.</td>
+        </tr>
+
+        <!-- R17 Masyn Winn -->
+        <tr class="row-warn">
+          <td><span class="grade grade-D">D</span></td>
+          <td class="pick-num">R17 · #203</td>
+          <td class="player-name">Masyn Winn ⚠️</td>
+          <td><span class="pos-chip pos-SS">SS</span> STL</td>
+          <td class="num vorp-val">#171</td>
+          <td class="num vorp-val">0.19</td>
+          <td class="note-cell note-bad">Already had Dansby Swanson at SS. This is a redundant position fill at near-zero VORP. In the 17th round, a wire-quality RP (Pete Fairbanks Rank 231, Carlos Estevez went undrafted tier) or OF upside would have been far better. Wasted pick.</td>
+        </tr>
+
+        <!-- R18 Lawrence Butler -->
+        <tr>
+          <td><span class="grade grade-Cplus">C+</span></td>
+          <td class="pick-num">R18 · #206</td>
+          <td class="player-name">Lawrence Butler</td>
+          <td><span class="pos-chip pos-OF">OF</span> ATH</td>
+          <td class="num vorp-val">#149</td>
+          <td class="num vorp-val">0.85</td>
+          <td class="note-cell note-good">Rank 149 at pick 206 is solid value. He's your UTIL starter (17.32 weekly pts — highest among non-position-slot hitters). Better pick than it looks on paper.</td>
+        </tr>
+
+        <!-- R19 Alec Bohm -->
+        <tr>
+          <td><span class="grade grade-C">C</span></td>
+          <td class="pick-num">R19 · #227</td>
+          <td class="player-name">Alec Bohm</td>
+          <td><span class="pos-chip pos-1B">1B</span><span class="pos-chip pos-3B">3B</span> PHI</td>
+          <td class="num vorp-val">#176</td>
+          <td class="num vorp-val">0.00</td>
+          <td class="note-cell note-warn">Exactly at replacement level. A late attempt to fix 1B but adds no real production edge. Fine as a bench piece — just can't be started as the 1B answer.</td>
+        </tr>
+
+        <!-- R20 Adolis Garcia -->
+        <tr>
+          <td><span class="grade grade-C">C</span></td>
+          <td class="pick-num">R20 · #230</td>
+          <td class="player-name">Adolis García</td>
+          <td><span class="pos-chip pos-OF">OF</span> PHI</td>
+          <td class="num vorp-val">#172</td>
+          <td class="num vorp-val">0.11</td>
+          <td class="note-cell">Fine last pick. Near replacement but has pop. Better upside plays existed (Daulton Varsho Rank 190 undrafted, Dylan Crews Rank 189 undrafted).</td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-info mt-16">
+    <strong>Correction — Perez has C/1B eligibility:</strong> Perez slides to 1B with Raleigh at C, so the 1B slot isn't empty — it's just below-average (Rank 96 vs. the league's typical Rank 25–75 1Bs). The pick is inefficient (Seiya Suzuki Rank 85 was right there) but not a disaster. The real wasted pick is <strong>R17 Masyn Winn</strong> — a near-zero VORP SS drafted when you already had Swanson. That's the pick to be angry about.
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       TRADE RECOMMENDATIONS
+  ════════════════════════════════════════════ -->
+  <h2 class="section-title">Trade Recommendations</h2>
+
+  <!-- TRADE 1 -->
+  <div class="trade-card">
+    <div class="trade-header">
+      <span class="trade-priority prio-2">2</span>
+      <span class="trade-title">Upgrade 1B — Target Freddie Freeman from Brandon's Badass Bitches</span>
+    </div>
+    <div class="trade-parties">
+      <div class="trade-side">
+        <div class="trade-side-label">You Send (Lu's Lazers)</div>
+        <div class="trade-players">
+          <div class="trade-player-row">
+            <span class="send-tag">OUT</span>
+            <span class="pos-chip pos-C">C</span>
+            <strong>Salvador Perez</strong> <span class="trade-meta">Rank #96 · C/1B · KC</span>
+          </div>
+          <div class="trade-player-row">
+            <span class="send-tag">OUT</span>
+            <span class="pos-chip pos-SP">SP</span>
+            <strong>Drew Rasmussen</strong> <span class="trade-meta">Rank #103 · SP · TB</span>
+          </div>
+        </div>
+      </div>
+      <div class="trade-arrow">⇄</div>
+      <div class="trade-side">
+        <div class="trade-side-label">You Get (from Brandon's)</div>
+        <div class="trade-players">
+          <div class="trade-player-row">
+            <span class="recv-tag">IN</span>
+            <span class="pos-chip pos-1B">1B</span>
+            <strong>Freddie Freeman</strong> <span class="trade-meta">Rank #42 · 1B · LAD</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="trade-rationale">
+      <strong>Why Brandon's would do this:</strong> Brandon's has Pete Alonso AND Freddie Freeman at 1B — one is literally benched. Their catcher is Yainer Diaz (Rank 177), essentially replacement-level. Perez (Rank 96) is a genuine C upgrade for them. Rasmussen fills their thin SP depth.<br><br>
+      <strong>Why this matters for you:</strong> Your 1B is currently Perez (Rank 96). Freeman (Rank 42) is a 54-rank-spot improvement at the position — going from a below-average 1B to an elite one. Freeman's weekly points (20.77) vs. Perez's (16.26) is nearly 4.5 points per week. Over a full season that's substantial. Rasmussen is replaceable from wire or your deep SP bench.
+    </div>
+  </div>
+
+  <!-- TRADE 2 -->
+  <div class="trade-card">
+    <div class="trade-header">
+      <span class="trade-priority prio-2">2</span>
+      <span class="trade-title">Alternate 1B Upgrade — Target Pete Alonso from Brandon's Badass Bitches</span>
+    </div>
+    <div class="trade-parties">
+      <div class="trade-side">
+        <div class="trade-side-label">You Send (Lu's Lazers)</div>
+        <div class="trade-players">
+          <div class="trade-player-row">
+            <span class="send-tag">OUT</span>
+            <span class="pos-chip pos-C">C</span>
+            <strong>Salvador Perez</strong> <span class="trade-meta">Rank #96 · C/1B · KC</span>
+          </div>
+          <div class="trade-player-row">
+            <span class="send-tag">OUT</span>
+            <span class="pos-chip pos-SP">SP</span>
+            <strong>José Soriano</strong> <span class="trade-meta">Rank #144 · SP · LAA</span>
+          </div>
+        </div>
+      </div>
+      <div class="trade-arrow">⇄</div>
+      <div class="trade-side">
+        <div class="trade-side-label">You Get (from Brandon's)</div>
+        <div class="trade-players">
+          <div class="trade-player-row">
+            <span class="recv-tag">IN</span>
+            <span class="pos-chip pos-1B">1B</span>
+            <strong>Pete Alonso</strong> <span class="trade-meta">Rank #25 · 1B · BAL</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="trade-rationale">
+      <strong>Why this works:</strong> Alonso (Rank 25, VORP 5.19) is even better than Freeman, but you'd need to include more. Soriano is thinner value than Rasmussen though, so the package is lighter. Brandon's may prefer the Rasmussen version. Either way — target Brandon's 1B surplus aggressively. Both Alonso and Freeman are sitting on their bench. Use Perez + a SP depth piece as the lever.
+    </div>
+  </div>
+
+  <!-- TRADE 3 -->
+  <div class="trade-card">
+    <div class="trade-header">
+      <span class="trade-priority prio-2">2</span>
+      <span class="trade-title">Upgrade SS — Target Willy Adames from Harrison the Master Bader!</span>
+    </div>
+    <div class="trade-parties">
+      <div class="trade-side">
+        <div class="trade-side-label">You Send (Lu's Lazers)</div>
+        <div class="trade-players">
+          <div class="trade-player-row">
+            <span class="send-tag">OUT</span>
+            <span class="pos-chip pos-SP">SP</span>
+            <strong>Blake Snell</strong> <span class="trade-meta">Rank #80 · SP · LAD</span>
+          </div>
+          <div class="trade-player-row">
+            <span class="send-tag">OUT</span>
+            <span class="pos-chip pos-SS">SS</span>
+            <strong>Dansby Swanson</strong> <span class="trade-meta">Rank #126 · SS · CHC</span>
+          </div>
+        </div>
+      </div>
+      <div class="trade-arrow">⇄</div>
+      <div class="trade-side">
+        <div class="trade-side-label">You Get (from Harrison's)</div>
+        <div class="trade-players">
+          <div class="trade-player-row">
+            <span class="recv-tag">IN</span>
+            <span class="pos-chip pos-SS">SS</span>
+            <strong>Willy Adames</strong> <span class="trade-meta">Rank #64 · SS · SF</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="trade-rationale">
+      <strong>Why Harrison might deal:</strong> Harrison is loaded with 3 OF starters (Schwarber, Tucker, PCA) and has solid SP depth (Glasnow, Gray, Michael King, Gore). Their SS, Willy Adames (Rank 64), is a huge upgrade over your Swanson (Rank 126). They might want Snell's upside to bolster rotation depth. This is a slight overpay but the SS improvement (Rank 64 vs 126 = ~60 rank spots) meaningfully upgrades a weak slot.<br><br>
+      <strong>Only do this if you've already solved 1B first.</strong> Don't weaken SP depth until the 1B problem is addressed via Trade #1.
+    </div>
+  </div>
+
+  <!-- TRADE 4 -->
+  <div class="trade-card">
+    <div class="trade-header">
+      <span class="trade-priority prio-3">3</span>
+      <span class="trade-title">Add a Second RP — Just Drop Bench Pieces for a Wire RP</span>
+    </div>
+    <div class="trade-parties">
+      <div class="trade-side">
+        <div class="trade-side-label">You Drop</div>
+        <div class="trade-players">
+          <div class="trade-player-row">
+            <span class="send-tag">DROP</span>
+            <span class="pos-chip pos-1B">1B</span>
+            <strong>Alec Bohm</strong> <span class="trade-meta">Rank #176 · VORP 0.00 · PHI</span>
+          </div>
+          <div class="trade-player-row">
+            <span class="send-tag">DROP</span>
+            <span class="pos-chip pos-SS">SS</span>
+            <strong>Masyn Winn</strong> <span class="trade-meta">Rank #171 · VORP 0.19 · STL</span>
+          </div>
+        </div>
+      </div>
+      <div class="trade-arrow">⇄</div>
+      <div class="trade-side">
+        <div class="trade-side-label">You Add (Wire)</div>
+        <div class="trade-players">
+          <div class="trade-player-row">
+            <span class="recv-tag">ADD</span>
+            <span class="pos-chip pos-RP">RP</span>
+            <strong>Pete Fairbanks</strong> <span class="trade-meta">Rank #231 · RP · MIA</span>
+          </div>
+          <div class="trade-player-row">
+            <span class="recv-tag">ADD</span>
+            <span class="pos-chip pos-OF">OF</span>
+            <strong>Daulton Varsho</strong> <span class="trade-meta">Rank #190 · OF · TOR</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="trade-rationale">
+      <strong>Note:</strong> Butler (Rank 149, 17.32 weekly) is your UTIL <em>starter</em> — don't trade him. The right move here is simply dropping Bohm (VORP 0.00) and Winn (VORP 0.19) from the bench and adding a second RP + OF depth from the wire. No trade partner needed. These two bench spots are completely dead weight right now.<br><br>
+      <strong>If you want a better RP via trade:</strong> target Jhoan Duran from Foltzy (they have Duran + Jeff Hoffman), or Ryan Helsley from Vladdy's, using Vargas + Adolis García as the package. But the wire route costs nothing.
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       WIRE PICKUPS
+  ════════════════════════════════════════════ -->
+  <h2 class="section-title">Waiver Wire Pickups — Do These Now</h2>
+
+  <div class="callout callout-info">
+    The following notable players went <strong>undrafted</strong> despite solid rankings. These are available on your waiver wire right now. Some of these are better than what you currently have on your bench.
+  </div>
+
+  <div class="wire-grid">
+    <div class="wire-card">
+      <div class="wire-player">Daulton Varsho</div>
+      <div class="wire-meta">OF · TOR · Rank #190</div>
+      <div class="wire-action">⬆ ADD — DROP Masyn Winn</div>
+      <div class="wire-why">Undrafted OF, better ranked than anything on your bench. Solid contact/power mix in a strong Toronto lineup.</div>
+    </div>
+    <div class="wire-card">
+      <div class="wire-player">Dylan Crews</div>
+      <div class="wire-meta">OF · WSH · Rank #189</div>
+      <div class="wire-action">⬆ ADD — DROP Adolis García or Winn</div>
+      <div class="wire-why">Top prospect with real production upside in 2026. Better ceiling than most of your bench OFs. Washington's lineup is growing.</div>
+    </div>
+    <div class="wire-card">
+      <div class="wire-player">Royce Lewis</div>
+      <div class="wire-meta">3B · MIN · Rank #221</div>
+      <div class="wire-action">⬆ ADD — Monitor</div>
+      <div class="wire-why">Elite talent when healthy. Gives 3B depth behind Bregman and has monstrous upside. Minnesota lineup is excellent. The only risk is injury history.</div>
+    </div>
+    <div class="wire-card">
+      <div class="wire-player">Pete Fairbanks</div>
+      <div class="wire-meta">RP · MIA · Rank #231</div>
+      <div class="wire-action">⬆ ADD — DROP Alec Bohm</div>
+      <div class="wire-why">Your biggest positional need is RP depth. Fairbanks as a second reliever behind Bednar is better than having a VORP 0.00 bench 1B who will never start.</div>
+    </div>
+    <div class="wire-card">
+      <div class="wire-player">Carlos Correa</div>
+      <div class="wire-meta">3B/SS · HOU · Rank #208</div>
+      <div class="wire-action">⬆ ADD if healthy</div>
+      <div class="wire-why">When healthy, Correa is a massive upgrade over Swanson at SS. The injury risk is real, but adding him to the bench and monitoring health costs nothing.</div>
+    </div>
+    <div class="wire-card">
+      <div class="wire-player">TJ Friedl</div>
+      <div class="wire-meta">OF · CIN · Rank #209</div>
+      <div class="wire-action">⬆ ADD — DROP Adolis García</div>
+      <div class="wire-why">Speed/OBP profile with OF eligibility. Competes for a bench OF spot. Reds are a strong offensive environment.</div>
+    </div>
+    <div class="wire-card">
+      <div class="wire-player">Reynaldo Lopez</div>
+      <div class="wire-meta">SP · ATL · Rank #201</div>
+      <div class="wire-action">⬆ ADD #1 — DROP Alec Bohm</div>
+      <div class="wire-why">Highest-ranked undrafted SP. Braves rotation is a great environment. This is your 7th pitcher and the move to make immediately.</div>
+    </div>
+    <div class="wire-card">
+      <div class="wire-player">Grayson Rodriguez</div>
+      <div class="wire-meta">SP · LAA · Rank #215</div>
+      <div class="wire-action">⬆ ADD #2 — DROP Masyn Winn</div>
+      <div class="wire-why">Most upside of any wire SP — young arm, big stuff, top prospect pedigree. Lower floor than Lopez but higher ceiling. Strong case for 8th SP if you want more depth.</div>
+    </div>
+    <div class="wire-card">
+      <div class="wire-player">Joey Cantillo</div>
+      <div class="wire-meta">SP/RP · CLE · Rank #225</div>
+      <div class="wire-action">⬆ ADD if others gone</div>
+      <div class="wire-why">SP/RP dual eligibility, Cleveland rotation. Safe floor pick if Lopez and Rodriguez are off the board.</div>
+    </div>
+  </div>
+
+  <!-- PRIORITY DROP LIST -->
+  <h2 class="section-title">Drop Candidates</h2>
+  <div class="panel-pad">
+    <table class="roster-table">
+      <thead>
+        <tr><th>Priority</th><th>Player</th><th>Rank</th><th>Reason</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="note-bad" class="fw-bold">DROP #1</span></td>
+          <td class="player-name">Alec Bohm</td>
+          <td class="num">#176</td>
+          <td class="note-cell">VORP 0.00 — literally replacement level. 1B/3B redundant behind Perez and Bregman. Nothing to lose. Drop immediately for Pete Fairbanks (RP wire add).</td>
+        </tr>
+        <tr>
+          <td><span class="note-warn" class="fw-bold">DROP #2</span></td>
+          <td class="player-name">Masyn Winn</td>
+          <td class="num">#171</td>
+          <td class="note-cell">VORP 0.19, redundant SS while Swanson starts. Drop for Daulton Varsho (OF wire) or Dylan Crews.</td>
+        </tr>
+        <tr>
+          <td><span class="note-cell" class="fw-bold">DROP #3</span></td>
+          <td class="player-name">Adolis García</td>
+          <td class="num">#172</td>
+          <td class="note-cell">VORP 0.11, 5th bench OF. Dylan Crews (Rank 189) and Varsho (190) are undrafted and better. Swap when you find the right add.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       ALL TEAMS OVERVIEW (for trade context)
+  ════════════════════════════════════════════ -->
+  <h2 class="section-title">League Overview — Team Needs &amp; Assets (for Trade Research)</h2>
+  <div class="panel-wrap">
+    <table class="league-table">
+      <thead>
+        <tr>
+          <th>Team</th>
+          <th>Top Assets</th>
+          <th>Needs</th>
+          <th>Has Excess Of</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr class="my-row">
+          <td class="team-name-cell">⚡ Lu's Lazers (YOU)</td>
+          <td>Crochet, Raleigh, Sale, Luzardo, Rooker, Snell, Bregman, Garcia, Butler (UTIL)</td>
+          <td>
+            <span class="need-chip">1B upgrade (Perez fills but weak)</span>
+            <span class="need-chip">RP depth</span>
+            <span class="need-chip">SS upgrade</span>
+          </td>
+          <td>
+            <span class="have-chip">SP (6 deep)</span>
+            <span class="have-chip">OF (Rooker + Ward + Marsee + Butler UTIL)</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="team-name-cell">Brandon's Badass Bitches</td>
+          <td>Soto, Pete Alonso, Freeman, Jazz Chisholm</td>
+          <td>
+            <span class="need-chip">C (Yainer Diaz is replacement)</span>
+            <span class="need-chip">Quality SP beyond top 4</span>
+          </td>
+          <td>
+            <span class="have-chip">1B (Alonso + Freeman on same team)</span>
+            <span class="have-chip">Late SP depth</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="team-name-cell">Vladdy's Wagons</td>
+          <td>Skubal, Caminero, Harper, Chourio, Kirby</td>
+          <td>
+            <span class="need-chip">C (Moreno unranked)</span>
+            <span class="need-chip">SS (Jacob Wilson Rank 211)</span>
+            <span class="need-chip">1B depth</span>
+          </td>
+          <td>
+            <span class="have-chip">SP depth</span>
+            <span class="have-chip">RP (Helsley + Chapman)</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="team-name-cell">bobby's Bases Loaded</td>
+          <td>Shohei Ohtani (Bat), Francisco Lindor, Yamamoto</td>
+          <td>
+            <span class="need-chip">3B</span>
+            <span class="need-chip">Quality RP</span>
+          </td>
+          <td>
+            <span class="have-chip">SS (Lindor + Bichette)</span>
+            <span class="have-chip">SP (Yamamoto + Sheehan + Flaherty)</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="team-name-cell">Harrison the Master Bader!</td>
+          <td>Schwarber, Kyle Tucker, PCA, Devers, Ben Rice C</td>
+          <td>
+            <span class="need-chip">SP depth (Glasnow injury risk)</span>
+          </td>
+          <td>
+            <span class="have-chip">OF (3 elite OFs)</span>
+            <span class="have-chip">C (Rice + Rutschman)</span>
+            <span class="have-chip">1B (Devers + Torkelson)</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="team-name-cell">Foltzy's Roid Ragers</td>
+          <td>J. Ramírez, Gunnar Henderson, Hunter Brown, Cole Ragans</td>
+          <td>
+            <span class="need-chip">C upgrade (Goodman ok but not elite)</span>
+            <span class="need-chip">More OF quality</span>
+          </td>
+          <td>
+            <span class="have-chip">SP (Brown + Ragans + Rodón + Bubic)</span>
+            <span class="have-chip">RP (Jhoan Duran, Hoffman)</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="team-name-cell">steel</td>
+          <td>Acuña, Tatis Jr., Matt Olson, William Contreras C, Logan Gilbert</td>
+          <td>
+            <span class="need-chip">SS (Peña ok, Story weak)</span>
+            <span class="need-chip">RP (only Pagan)</span>
+          </td>
+          <td>
+            <span class="have-chip">SP (Gilbert, deGrom, Bradish, Strider, Bibee, Cole, Abbott)</span>
+            <span class="have-chip">OF (Acuña, Tatis, Suzuki)</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="team-name-cell">Joe's Sluggers</td>
+          <td>Paul Skenes, Cristopher Sanchez, Manny Machado, James Wood, Edwin Diaz</td>
+          <td>
+            <span class="need-chip">C (Agustin Ramirez Rank 132)</span>
+            <span class="need-chip">2B</span>
+          </td>
+          <td>
+            <span class="have-chip">SP (Skenes + Sanchez + Cease + Castillo)</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="team-name-cell">Dancing Homers</td>
+          <td>Elly De La Cruz, Vlad Jr., Bryan Woo, Yordan Alvarez, Framber</td>
+          <td>
+            <span class="need-chip">C upgrade (Herrera Rank 95 ok)</span>
+          </td>
+          <td>
+            <span class="have-chip">3B (Suárez + Okamoto)</span>
+            <span class="have-chip">SP depth</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="team-name-cell">ITS YEEEEEE BOYYYY</td>
+          <td>Bobby Witt Jr., Corbin Carroll, Logan Webb, Gausman, McClanahan</td>
+          <td>
+            <span class="need-chip">C (Will Smith Rank 124 — decent)</span>
+          </td>
+          <td>
+            <span class="have-chip">OF (Carroll, Duran, Greene, Doyle)</span>
+            <span class="have-chip">SP depth</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="team-name-cell">SoCal Swing Kings</td>
+          <td>Julio Rodriguez, Nick Kurtz, Max Fried, Zach Neto, Ohtani (Pitcher)</td>
+          <td>
+            <span class="need-chip">C (Alejandro Kirk Rank 202 is weak)</span>
+          </td>
+          <td>
+            <span class="have-chip">SP (Max Fried + Ohtani + Joe Ryan + Lodolo + Singer)</span>
+            <span class="have-chip">RP (Josh Hader)</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="team-name-cell">Fly The W</td>
+          <td>Aaron Judge, Ketel Marte, Trea Turner, Mookie Betts, Zack Wheeler</td>
+          <td>
+            <span class="need-chip">SP depth (Wheeler + Imanaga thin after R2)</span>
+          </td>
+          <td>
+            <span class="have-chip">SS/IF (Turner, Betts, Montgomery)</span>
+            <span class="have-chip">Hitting (top-heavy)</span>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       FINAL ACTION PLAN
+  ════════════════════════════════════════════ -->
+  <h2 class="section-title">Your Action Plan — Priority Order</h2>
+  <div class="callout callout-info">
+    <strong>Step 1 (Immediate — free):</strong> Drop Alec Bohm (VORP 0.00). Add Reynaldo Lopez (SP, Rank 201, ATL) — your 7th pitcher. Costs nothing, adds real SP depth immediately.<br><br>
+    <strong>Step 2 (Immediate — free):</strong> Drop Masyn Winn (VORP 0.19, redundant SS). Add Grayson Rodriguez (SP, Rank 215) for SP upside, Pete Fairbanks (RP) for RP depth, or Daulton Varsho (OF, Rank 190) for bench OF. Pick based on biggest need.<br><br>
+    <strong>Step 3 (This week — trade):</strong> Your confirmed starting lineup is: Raleigh (C), Perez (1B), Garcia (2B), Bregman (3B), Swanson (SS), Rooker/Ward/Marsee (OF×3), Butler (UTIL). This is solid. But 1B is the upgradeable slot — offer Perez + Rasmussen to Brandon's for Freddie Freeman. Freeman (Rank 42, 20.77 weekly) over Perez (Rank 96, 16.26 weekly) is +4.5 pts/week at 1B. If that trade happens, Vargas becomes your 1B backup.<br><br>
+    <strong>Step 4 (Secondary):</strong> If you want an SS upgrade, target Willy Adames (Rank 64) from Harrison's — they're bloated with OF and have SP depth to absorb Snell. Or monitor Carlos Correa on the wire if he's healthy.<br><br>
+    <strong>Stay the course on pitching:</strong> Your rotation is the best in the league. Don't trade Crochet, Sale, or Luzardo unless you're getting a top-20 bat back. The SP depth is your greatest asset and your best trade leverage.
+  </div>
+
+</div><!-- /.analysis-wrap -->
+</body>
+</html>
